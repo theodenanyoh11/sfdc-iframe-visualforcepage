@@ -1,0 +1,6 @@
+export { Users } from "./Users"
+export { Media } from "./Media"
+export { Pages } from "./Pages"
+export { Posts } from "./Posts"
+export { Categories } from "./Categories"
+export { FAQs } from "./FAQs"

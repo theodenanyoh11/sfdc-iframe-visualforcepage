@@ -1,0 +1,7 @@
+export { hero } from "./config"
+export { RenderHero } from "./RenderHero"
+export { HighImpactHero } from "./HighImpact"
+export { LowImpactHero } from "./LowImpact"
+export { MediumImpactHero } from "./MediumImpact"
+export { ProductShowcaseHero } from "./ProductShowcase"
+export { PostHero } from "./PostHero"

@@ -1,0 +1,31 @@
+{
+  "name": "sfdc-lex-out",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:all": "turbo dev",
+    "dev:web": "turbo -F @repo/web dev",
+    "dev:backend": "turbo -F @repo/backend dev",
+    "dev:setup": "pnpm --filter @repo/backend dev:setup",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
+    "format": "turbo format",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "test:e2e": "turbo test:e2e",
+    "clean": "turbo clean && rm -rf node_modules",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": ["biome check --apply"],
+    "*.{json,md}": ["biome format --write"]
+  }
+}

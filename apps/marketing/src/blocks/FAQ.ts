@@ -1,0 +1,18 @@
+import type { Block } from 'payload'
+
+export const FAQBlock: Block = {
+  slug: 'faq',
+  labels: { singular: 'FAQ', plural: 'FAQs' },
+  fields: [
+    { name: 'heading', type: 'text' },
+    { name: 'subheading', type: 'textarea' },
+    {
+      name: 'items',
+      type: 'array',
+      fields: [
+        { name: 'question', type: 'text', required: true },
+        { name: 'answer', type: 'textarea', required: true },
+      ],
+    },
+  ],
+}

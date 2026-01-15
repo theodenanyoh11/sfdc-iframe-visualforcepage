@@ -1,0 +1,42 @@
+<template>
+    <lightning-card title="My Cases" icon-name="standard:case">
+        <div slot="actions">
+            <lightning-button label="Create New Case" onclick={handleCreateNew} variant="brand"></lightning-button>
+        </div>
+
+        <div class="slds-p-around_medium slds-is-relative" style="min-height: 200px;">
+            <template lwc:if={isLoading}>
+                <div class="slds-is-relative" style="min-height: 150px;">
+                    <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:if={error}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <lightning-icon icon-name="utility:error" size="small"></lightning-icon>
+                    <h2 class="slds-m-left_small">{error}</h2>
+                </div>
+            </template>
+
+            <template lwc:if={showEmptyState}>
+                <div class="slds-p-vertical_xx-large slds-text-align_center">
+                    <lightning-icon icon-name="standard:empty_state" size="large"></lightning-icon>
+                    <h3 class="slds-text-heading_medium slds-m-top_small">No Cases Found</h3>
+                    <p class="slds-text-color_weak">You haven't submitted any cases yet.</p>
+                    <lightning-button label="Create Your First Case" onclick={handleCreateNew}
+                                      variant="brand" class="slds-m-top_medium"></lightning-button>
+                </div>
+            </template>
+
+            <template lwc:if={hasData}>
+                <lightning-datatable
+                    key-field="id"
+                    data={cases}
+                    columns={columns}
+                    hide-checkbox-column
+                    onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </template>
+        </div>
+    </lightning-card>
+</template>

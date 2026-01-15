@@ -1,0 +1,92 @@
+<template>
+    <lightning-card title="Create New Case" icon-name="standard:case">
+        <div class="slds-p-around_medium">
+            <!-- Loading Spinner -->
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+            </template>
+
+            <!-- Error Message -->
+            <template lwc:if={error}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_medium" role="alert">
+                    <lightning-icon icon-name="utility:error" alternative-text="Error" size="small"></lightning-icon>
+                    <h2>{error}</h2>
+                </div>
+            </template>
+
+            <!-- Success Message -->
+            <template lwc:if={showSuccess}>
+                <div class="slds-notify slds-notify_alert slds-alert_success slds-m-bottom_medium" role="alert">
+                    <lightning-icon icon-name="utility:success" alternative-text="Success" size="small"></lightning-icon>
+                    <h2>Case created successfully! Redirecting...</h2>
+                </div>
+            </template>
+
+            <template lwc:if={showForm}>
+                <div class="slds-form">
+                    <!-- Account Selection -->
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <lightning-combobox
+                            name="account"
+                            label="Select Account"
+                            value={selectedAccountId}
+                            placeholder="Choose an account..."
+                            options={accountOptions}
+                            onchange={handleAccountChange}
+                            required>
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- Type Selection -->
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <lightning-combobox
+                            name="type"
+                            label="Type"
+                            value={selectedType}
+                            placeholder="Choose a type..."
+                            options={typeOptions}
+                            onchange={handleTypeChange}
+                            required>
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- Sub Type Selection -->
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <lightning-combobox
+                            name="subType"
+                            label="Sub Type"
+                            value={selectedSubType}
+                            placeholder={subTypePlaceholder}
+                            options={subTypeOptions}
+                            onchange={handleSubTypeChange}
+                            disabled={isSubTypeDisabled}>
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <lightning-textarea
+                            name="description"
+                            label="Description"
+                            value={description}
+                            placeholder="Describe your issue..."
+                            max-length="32000"
+                            onchange={handleDescriptionChange}
+                            required>
+                        </lightning-textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="slds-form-element">
+                        <lightning-button
+                            variant="brand"
+                            label="Submit Case"
+                            onclick={handleSubmit}
+                            disabled={isSubmitDisabled}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

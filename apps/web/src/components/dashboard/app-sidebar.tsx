@@ -7,6 +7,8 @@ import {
   ChevronsUpDown,
   LogOut,
   User,
+  Briefcase,
+  PlusCircle,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { signOut, useSession } from '@/lib/auth'
@@ -43,6 +45,19 @@ const navigation = [
     title: 'Settings',
     url: '/settings',
     icon: Settings,
+  },
+]
+
+const casesNavigation = [
+  {
+    title: 'My Cases',
+    url: '/cases',
+    icon: Briefcase,
+  },
+  {
+    title: 'Create Case',
+    url: '/cases/create',
+    icon: PlusCircle,
   },
 ]
 
@@ -92,6 +107,23 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navigation.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Salesforce Cases</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {casesNavigation.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <a href={item.url}>

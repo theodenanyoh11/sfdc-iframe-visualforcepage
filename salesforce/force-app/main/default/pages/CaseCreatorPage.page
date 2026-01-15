@@ -1,0 +1,127 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="true" applyBodyTag="false">
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <apex:slds />
+    <apex:includeLightning />
+    <style>
+        body {
+            margin: 0;
+            padding: 16px;
+            font-family: 'Salesforce Sans', Arial, sans-serif;
+            background: transparent;
+        }
+        #lightning-container {
+            min-height: 400px;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+        .error-message {
+            padding: 16px;
+            background-color: #fef0f0;
+            border: 1px solid #ea001e;
+            border-radius: 4px;
+            color: #ea001e;
+        }
+    </style>
+</head>
+<body>
+    <div id="lightning-container">
+        <div class="loading">
+            <div class="slds-spinner_container">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Helper to post messages to parent window
+        function postToParent(type, payload) {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: type, payload: payload }, '*');
+            }
+        }
+
+        // Get parameters from URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var externalUserId = urlParams.get('externalUserId') || '';
+        var componentName = urlParams.get('component') || 'c:caseList';
+        var caseId = urlParams.get('caseId') || '';
+
+        // Build component attributes based on component type
+        var componentAttributes = {};
+
+        if (externalUserId) {
+            componentAttributes.externalUserId = externalUserId;
+        }
+
+        if (caseId && componentName === 'c:caseDetail') {
+            componentAttributes.caseId = caseId;
+        }
+
+        console.log('[VF Page] Initializing component:', componentName);
+        console.log('[VF Page] Attributes:', JSON.stringify(componentAttributes));
+
+        $Lightning.use("c:CaseManagementOutApp", function() {
+            console.log('[VF Page] Lightning app loaded, creating component...');
+
+            $Lightning.createComponent(
+                componentName,
+                componentAttributes,
+                "lightning-container",
+                function(cmp, status, errorMessage) {
+                    if (status === "SUCCESS") {
+                        console.log('[VF Page] Component created successfully');
+                        // Remove any leftover loading spinners from the container
+                        var loadingDiv = document.querySelector('.loading');
+                        if (loadingDiv) loadingDiv.remove();
+                        postToParent('LOADED', { component: componentName });
+
+                        // Set up event listeners for LWC events on the container
+                        var container = document.getElementById('lightning-container');
+
+                        container.addEventListener('casecreated', function(e) {
+                            console.log('[VF Page] Case created event:', e.detail);
+                            postToParent('CASE_CREATED', { caseId: e.detail.caseId });
+                        });
+
+                        container.addEventListener('caseselected', function(e) {
+                            console.log('[VF Page] Case selected event:', e.detail);
+                            postToParent('CASE_SELECTED', { caseId: e.detail.caseId });
+                        });
+
+                        container.addEventListener('navigate', function(e) {
+                            console.log('[VF Page] Navigate event:', e.detail);
+                            postToParent('NAVIGATE', { destination: e.detail.destination });
+                        });
+
+                    } else if (status === "ERROR") {
+                        console.error('[VF Page] Error creating component:', errorMessage);
+                        postToParent('ERROR', { message: errorMessage });
+
+                        document.getElementById("lightning-container").innerHTML =
+                            '<div class="error-message">' +
+                            '<strong>Error loading component</strong><br/>' +
+                            errorMessage +
+                            '</div>';
+
+                    } else if (status === "INCOMPLETE") {
+                        console.error('[VF Page] Component creation incomplete');
+                        postToParent('ERROR', { message: 'Component creation incomplete. Check network.' });
+                    }
+                }
+            );
+        });
+    </script>
+</body>
+</html>
+</apex:page>
